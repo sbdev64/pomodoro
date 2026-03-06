@@ -1,9 +1,9 @@
-import './global.css';
-
 import { useEffect, useRef } from 'react';
-import { Pressable, Text, View, useWindowDimensions } from 'react-native';
+import { View, useWindowDimensions } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
+import { TamaguiProvider, XStack, YStack, Text } from 'tamagui';
 
+import tamaguiConfig from './tamagui.config';
 import { useTimerStore, MODES, ModeKey } from './store/timerStore';
 
 function pad(n: number): string {
@@ -23,7 +23,6 @@ export default function App() {
   const seconds = secondsLeft % 60;
   const progress = secondsLeft / current.duration;
 
-  // Scale ring down in landscape so it fits the reduced vertical space
   const ringSize = isLandscape ? 176 : 240;
   const ringBorder = isLandscape ? 10 : 12;
 
@@ -39,23 +38,29 @@ export default function App() {
   }, [running]);
 
   const modeTabs = (
-    <View className="flex-row bg-black/15 rounded-full p-1">
+    <XStack backgroundColor="rgba(0,0,0,0.15)" borderRadius={30} padding={4}>
       {(Object.entries(MODES) as [ModeKey, (typeof MODES)[ModeKey]][]).map(([key, m]) => (
-        <Pressable
+        <YStack
           key={key}
           onPress={() => switchMode(key)}
-          className={`py-2 px-4 rounded-full ${mode === key ? 'bg-white/25' : ''}`}
+          paddingVertical={8}
+          paddingHorizontal={16}
+          borderRadius={26}
+          backgroundColor={mode === key ? 'rgba(255,255,255,0.25)' : 'transparent'}
         >
           <Text
-            className={`font-semibold text-sm ${mode === key ? 'text-white' : 'text-white/70'}`}
+            color={mode === key ? 'white' : 'rgba(255,255,255,0.7)'}
+            fontWeight="600"
+            fontSize={14}
           >
             {m.label}
           </Text>
-        </Pressable>
+        </YStack>
       ))}
-    </View>
+    </XStack>
   );
 
+  // Timer ring uses RN View + inline styles — it's a custom CSS visual, not a layout element
   const timerRing = (
     <View
       style={{
@@ -84,12 +89,8 @@ export default function App() {
         }}
       />
       <Text
-        style={{
-          fontSize: isLandscape ? 44 : 64,
-          fontWeight: '100',
-          color: 'white',
-          letterSpacing: 2,
-        }}
+        color="white"
+        style={{ fontSize: isLandscape ? 44 : 64, fontWeight: '100', letterSpacing: 2 }}
       >
         {pad(minutes)}:{pad(seconds)}
       </Text>
@@ -97,56 +98,74 @@ export default function App() {
   );
 
   const sessionsText = (
-    <Text className="text-white/80 text-base font-medium">
+    <Text color="rgba(255,255,255,0.8)" fontSize={16} fontWeight="500">
       {sessions} session{sessions !== 1 ? 's' : ''} completed
     </Text>
   );
 
   const buttons = (
-    <View className="flex-row gap-4 items-center">
-      <Pressable onPress={reset} className="rounded-full py-4 px-6 border-2 border-white/60">
-        <Text className="text-base font-semibold text-white/90">Reset</Text>
-      </Pressable>
-      <Pressable
-        onPress={toggleTimer}
-        className="bg-white rounded-full py-4 px-12"
-        style={{ elevation: 6 }}
+    <XStack gap={16} alignItems="center">
+      <YStack
+        onPress={reset}
+        borderRadius={50}
+        paddingVertical={16}
+        paddingHorizontal={24}
+        borderWidth={2}
+        borderColor="rgba(255,255,255,0.6)"
       >
-        <Text className="text-lg font-bold text-[#333]">
+        <Text color="rgba(255,255,255,0.9)" fontWeight="600" fontSize={16}>
+          Reset
+        </Text>
+      </YStack>
+      <YStack
+        onPress={toggleTimer}
+        backgroundColor="white"
+        borderRadius={50}
+        paddingVertical={16}
+        paddingHorizontal={48}
+        elevation={6}
+      >
+        <Text color="#333333" fontWeight="700" fontSize={18}>
           {running ? 'Pause' : secondsLeft === 0 ? 'Restart' : 'Start'}
         </Text>
-      </Pressable>
-    </View>
+      </YStack>
+    </XStack>
   );
 
-  if (isLandscape) {
-    return (
-      <View className="flex-1 flex-row" style={{ backgroundColor: current.color }}>
-        <StatusBar style="light" hidden />
-        {/* Left: timer ring */}
-        <View className="flex-1 items-center justify-center">
-          {timerRing}
-        </View>
-        {/* Right: mode tabs + sessions + buttons */}
-        <View className="flex-1 items-center justify-evenly py-4">
-          {modeTabs}
-          {sessionsText}
-          {buttons}
-        </View>
-      </View>
-    );
-  }
-
-  return (
-    <View
-      className="flex-1 items-center justify-evenly pt-16 pb-10"
-      style={{ backgroundColor: current.color }}
+  const portrait = (
+    <YStack
+      flex={1}
+      alignItems="center"
+      justifyContent="space-evenly"
+      paddingTop={60}
+      paddingBottom={40}
+      backgroundColor={current.color}
     >
       <StatusBar style="light" />
       {modeTabs}
       {timerRing}
       {sessionsText}
       {buttons}
-    </View>
+    </YStack>
+  );
+
+  const landscape = (
+    <XStack flex={1} backgroundColor={current.color}>
+      <StatusBar style="light" hidden />
+      <YStack flex={1} alignItems="center" justifyContent="center">
+        {timerRing}
+      </YStack>
+      <YStack flex={1} alignItems="center" justifyContent="space-evenly" paddingVertical={16}>
+        {modeTabs}
+        {sessionsText}
+        {buttons}
+      </YStack>
+    </XStack>
+  );
+
+  return (
+    <TamaguiProvider config={tamaguiConfig} defaultTheme="light">
+      {isLandscape ? landscape : portrait}
+    </TamaguiProvider>
   );
 }

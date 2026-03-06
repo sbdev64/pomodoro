@@ -1,6 +1,6 @@
 # Pomodoro
 
-A simple Pomodoro timer built with React Native, Expo, TypeScript, NativeWind (Tailwind CSS), and Zustand.
+A simple Pomodoro timer built with React Native, Expo, TypeScript, Tamagui, and Zustand.
 
 ## Features
 
@@ -101,16 +101,14 @@ Scan the QR code with Expo Go. Requires `@expo/ngrok` (already in dependencies) 
 
 ```
 pomodoro/
-├── App.tsx             # Root component — layout and timer UI
+├── App.tsx               # Root component — layout and timer UI
 ├── store/
-│   └── timerStore.ts   # Zustand store — all timer state and actions
-├── global.css          # Tailwind directives (NativeWind entry point)
-├── tailwind.config.js  # Tailwind configuration
-├── metro.config.js     # Metro bundler + NativeWind integration
-├── tsconfig.json       # TypeScript configuration
-├── nativewind-env.d.ts # NativeWind type declarations
-├── app.json            # Expo configuration
-├── babel.config.js     # Babel preset for Expo + NativeWind
+│   └── timerStore.ts     # Zustand store — all timer state and actions
+├── tamagui.config.ts     # Tamagui theme/token configuration
+├── metro.config.js       # Metro bundler configuration
+├── tsconfig.json         # TypeScript configuration
+├── app.json              # Expo configuration
+├── babel.config.js       # Babel preset for Expo + Tamagui
 └── package.json
 ```
 
@@ -122,10 +120,10 @@ pomodoro/
 | react | 18.3.1 | UI library |
 | react-native | 0.76.9 | Native runtime |
 | expo-status-bar | ~2.0.0 | Status bar control |
-| nativewind | ^4.1.23 | Tailwind CSS for React Native |
-| tailwindcss | ^3.4.0 | Utility-first CSS framework |
+| tamagui | ^2.0.0-rc | UI component library and style system |
+| @tamagui/config | ^2.0.0-rc | Default Tamagui theme and tokens |
+| @tamagui/babel-plugin | ^2.0.0-rc | Babel plugin for static extraction |
 | zustand | ^5.0.0 | Lightweight state management |
-| react-native-reanimated | ~3.16.1 | Animation support (required by NativeWind) |
 | react-native-web | ~0.19.13 | Web support |
 | react-dom | 18.3.1 | Web rendering |
 | @expo/metro-runtime | ~4.0.1 | Metro runtime for web |
