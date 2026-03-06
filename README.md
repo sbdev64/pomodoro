@@ -1,6 +1,6 @@
 # Pomodoro
 
-A simple Pomodoro timer built with React Native and Expo.
+A simple Pomodoro timer built with React Native, Expo, TypeScript, NativeWind (Tailwind CSS), and Zustand.
 
 ## Features
 
@@ -101,9 +101,16 @@ Scan the QR code with Expo Go. Requires `@expo/ngrok` (already in dependencies) 
 
 ```
 pomodoro/
-├── App.js          # Main component — all app logic and UI
-├── app.json        # Expo configuration
-├── babel.config.js # Babel preset for Expo
+├── App.tsx             # Root component — layout and timer UI
+├── store/
+│   └── timerStore.ts   # Zustand store — all timer state and actions
+├── global.css          # Tailwind directives (NativeWind entry point)
+├── tailwind.config.js  # Tailwind configuration
+├── metro.config.js     # Metro bundler + NativeWind integration
+├── tsconfig.json       # TypeScript configuration
+├── nativewind-env.d.ts # NativeWind type declarations
+├── app.json            # Expo configuration
+├── babel.config.js     # Babel preset for Expo + NativeWind
 └── package.json
 ```
 
@@ -111,11 +118,15 @@ pomodoro/
 
 | Package | Version | Purpose |
 |---|---|---|
-| expo | ~52.0.0 | Expo SDK and CLI |
+| expo | ~52.0.49 | Expo SDK and CLI |
 | react | 18.3.1 | UI library |
-| react-native | 0.76.7 | Native runtime |
+| react-native | 0.76.9 | Native runtime |
 | expo-status-bar | ~2.0.0 | Status bar control |
+| nativewind | ^4.1.23 | Tailwind CSS for React Native |
+| tailwindcss | ^3.4.0 | Utility-first CSS framework |
+| zustand | ^5.0.0 | Lightweight state management |
+| react-native-reanimated | ~3.16.1 | Animation support (required by NativeWind) |
 | react-native-web | ~0.19.13 | Web support |
 | react-dom | 18.3.1 | Web rendering |
 | @expo/metro-runtime | ~4.0.1 | Metro runtime for web |
-| @expo/ngrok | ^4.0.0 | Tunnel support for WSL/remote |
+| @expo/ngrok | ^4.1.3 | Tunnel support for WSL/remote |
